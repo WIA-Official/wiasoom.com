@@ -6,11 +6,11 @@
 <p align="center"><strong>The World's First Multimodal AI Terminal</strong></p>
 <p align="center">
 SSH Terminal + AI Agent + Code Editor + SFTP + Observability<br>
-All in one app. Free. Open Source. 254 Languages.
+All in one app. Free. 254 Languages.
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 Languages">
   <img src="https://img.shields.io/badge/plugins-517-green?style=flat-square" alt="517 Plugins">
   <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="Proprietary License">
@@ -37,6 +37,25 @@ All in one app. Free. Open Source. 254 Languages.
 <p align="center">
   <em>"I didn't know the word 'multimodal.' I just wanted my AI to see what I see."</em><br>
   <sub>— Yeon Sam-heum, Creator of WIA SOOM</sub>
+</p>
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="images/multimodal-upload.png" width="800" alt="Multimodal Upload — drag & drop images, files, videos into SSH terminal"><br>
+  <em>World's first: drag & drop images, files, and videos directly into your SSH terminal</em>
+</p>
+
+<p align="center">
+  <img src="images/plugin-marketplace.png" width="800" alt="Plugin Marketplace — 517 plugins"><br>
+  <em>517 plugins — one-click install from the built-in marketplace</em>
+</p>
+
+<p align="center">
+  <img src="images/languages-254.png" width="800" alt="254 Languages"><br>
+  <em>254 languages — every language, every script, RTL support</em>
 </p>
 
 ---
