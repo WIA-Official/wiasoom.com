@@ -1,0 +1,15 @@
+# Source code (private repo only)
+node_modules/
+dist/
+dist-web/
+out/
+src/
+*.ts
+*.tsx
+*.tgz
+.env
+.env.*
+
+# Build artifacts
+*.map
+*.log
