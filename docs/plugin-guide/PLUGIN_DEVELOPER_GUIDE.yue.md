@@ -1,0 +1,965 @@
+<p align="center">
+  <img src="https://wiasoom.com/favicon.png" width="80" alt="WIA SOOM">
+</p>
+
+<h1 align="center">WIA SOOM 插件開發者指南</h1>
+<p align="center"><strong>5分鐘內建立你自己的插件。</strong></p>
+<p align="center">在 WIA SOOM 內創建強大的伺服器工具、儀表板和自動化功能。</p>
+
+---
+
+## 目錄
+
+- [第 1 部分：快速入門 — 5 分鐘內建立你的第一個插件](#part-1-quick-start--your-first-plugin-in-5-minutes)
+- [第 2 部分：插件上下文 API 參考](#part-2-plugin-context-api-reference)
+  - [ctx.terminal](#ctxterminal--run-commands-on-remote-servers)
+  - [ctx.sftp](#ctxsftp--file-transfer)
+  - [ctx.ui](#ctxui--user-interface)
+  - [ctx.settings](#ctxsettings--persistent-storage)
+  - [ctx.ai](#ctxai--ai-integration)
+- [第 3 部分：使用 Webviews 建立自定義 UI](#part-3-building-custom-ui-with-webviews)
+- [第 4 部分：發布你的插件](#part-4-publishing-your-plugin)
+- [第 5 部分：最佳實踐](#part-5-best-practices)
+- [第 6 部分：現實世界的例子](#part-6-real-world-examples)
+- [附錄：類別和圖標](#appendix-categories--icons)
+
+---
+
+## 第 1 部分：快速入門 — 5 分鐘內建立你的第一個插件
+
+### 你將建立什麼
+
+一個 "Hello World" 插件，會���側邊欄添加一個按鈕。當按下時，會顯示一個通知。
+
+### 步驟 1：創建插件文件夾
+```bash
+mkdir -p ~/.wia-soom/plugins/hello-world
+cd ~/.wia-soom/plugins/hello-world
+```
+### 步驟 2：創建 package.json
+```json
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "My first WIA SOOM plugin — says hello!",
+  "author": "Your Name",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": ["hello", "example"],
+  "soom": {
+    "minVersion": "0.50.0"
+  }
+}
+```
+**必填字段：** `name`, `version`, `description`, `author`, `main`
+
+### 步驟 3：創建 index.js
+```javascript
+'use strict';
+
+/**
+ * Hello World — WIA SOOM Plugin
+ *
+ * This is the simplest possible plugin.
+ * It adds a sidebar button and shows a notification when clicked.
+ */
+
+exports.activate = function activate(context) {
+  // Add a button to the sidebar
+  context.ui.addSidebarButton({
+    icon: 'hand-metal',      // Lucide icon name (see: lucide.dev/icons)
+    label: 'Hello World',
+    onClick: function() {
+      context.ui.showNotification('success', 'Hello from WIA SOOM! Your first plugin works!');
+    }
+  });
+};
+
+// Optional: cleanup when plugin is disabled or app closes
+exports.deactivate = function deactivate() {
+  // Nothing to clean up in this example
+};
+```
+### 步驟 4：重啟 WIA SOOM
+
+重啟應用程式（或在設置 → 插件中切換插件的開關）。
+
+你應該會在側邊欄看到一個 **"Hello World"** 按鈕。點擊它 — 你會看到一個成功的通知！
+
+### 它是如何運作的
+```
+1. App starts → scans ~/.wia-soom/plugins/
+2. Finds hello-world/package.json → reads manifest
+3. If enabled: require('hello-world/index.js')
+4. Calls activate(context) → your code runs
+5. Your code registers a sidebar button
+6. User clicks button → onClick fires
+7. App closes → calls deactivate() for cleanup
+```
+---
+
+## 第 2 部分：插件上下文 API 參考
+
+當你的 `activate(context)` 函數被調用時，`context`（或 `ctx`）提供這些 API：
+```typescript
+interface PluginContext {
+  terminal: { ... }   // Run commands on remote servers
+  sftp:     { ... }   // Upload/download files
+  ui:       { ... }   // Sidebar buttons, webviews, notifications, status bar
+  settings: { ... }   // Persistent key-value storage
+  ai:       { ... }   // AI chat (Soomy integration)
+}
+```
+---
+
+### `ctx.terminal` — 在遠程伺服器上運行命令
+
+#### `terminal.send(sessionId, data)`
+
+將命令（或任何數據）發送到一個活動的終端會話。
+
+| 參數 | 類型 | 描述 |
+|-----------|------|-------------|
+| `sessionId` | `string` | 要發送到的終端會話 |
+| `data` | `string` | 要發送的命令或數據 |
+```javascript
+// Send a command to the terminal
+// Don't forget the \n (newline) to execute it!
+context.terminal.send(sessionId, 'df -h\n');
+```
+#### `terminal.onOutput(sessionId, callback)`
+
+訂閱來自終端會話的所有輸出。返回一個 **取消訂閱函數**。
+
+| 參數 | 類型 | 描述 |
+|-----------|------|-------------|
+| `sessionId` | `string` | 要監視的終端會話 |
+| `callback` | `(data: string) => void` | 每當有輸出時被調用 |
+| **返回** | `() => void` | 調用此函數以停止監聽 |
+```javascript
+// Watch terminal output for errors
+var unsubscribe = context.terminal.onOutput(sessionId, function(data) {
+  if (data.includes('ERROR') || data.includes('error')) {
+    context.ui.showNotification('error', 'Error detected in terminal output!');
+  }
+});
+
+// Later: stop watching
+unsubscribe();
+```
+**重要：** 始終保存取消訂閱函數，並在 `deactivate()` 中調用它以防止內存泄漏。
+
+---
+
+### `ctx.sftp` — 文件傳輸
+
+> **狀態：即將推出** — SFTP API 已定義，但尚未連接到應用的 SFTP 引擎。`list()` 目前返回一個空數組，而 `upload()`/`download()` 是無操作的。這將在未來的版本中完全實現。現在，使用 `ctx.terminal.send()` 搭配 `scp` 或 `rsync` 命令作為變通方法。
+
+#### `sftp.list(sessionId, path)`
+
+列出遠程目錄中的文件。
+```javascript
+var files = await context.sftp.list(sessionId, '/var/log/');
+// files = [{ name: 'syslog', size: 1024, ... }, ...]
+```
+#### `sftp.upload(sessionId, localPath, remotePath)`
+
+將文件從本地機器上傳到遠程伺服器。
+```javascript
+await context.sftp.upload(sessionId, '/tmp/config.json', '/etc/myapp/config.json');
+context.ui.showNotification('success', 'Config uploaded!');
+```
+#### `sftp.download(sessionId, remotePath, localPath)`
+
+將文件從遠程伺服器下載到本地機器。
+```javascript
+await context.sftp.download(sessionId, '/var/log/app.log', '/tmp/app.log');
+```
+**變通方法（直到 SFTP API 上線）：**
+```javascript
+// Use terminal commands instead
+context.terminal.send(sessionId, 'scp user@host:/var/log/app.log /tmp/\n');
+```
+---
+
+### `ctx.ui` — 用戶界面
+
+#### `ui.addSidebarButton(options)`
+
+在 WIA SOOM 側邊欄添加一個按鈕。
+
+| 選項 | 類型 | 必填 | 描述 |
+|--------|------|----------|-------------|
+| `id` | `string` | 否 | 唯一 ID（默認為插件名稱） |
+| `icon` | `string` | 是 | Lucide 圖標名稱（例如，`'server'`、`'shield'`、`'database'`） |
+| `label` | `string` | 是 | 在側邊欄顯示的按鈕文本 |
+| `onClick` | `() => void` | 是 | 按鈕被點擊時調用的函數 |
+```javascript
+context.ui.addSidebarButton({
+  id: 'my-dashboard',
+  icon: 'layout-dashboard',
+  label: 'My Dashboard',
+  onClick: function() {
+    // Open a webview, run a command, show a notification — anything!
+    context.ui.openWebview({
+      title: 'My Dashboard',
+      html: '<h1>Hello!</h1><p>This is my dashboard.</p>'
+    });
+  }
+});
+```
+**圖標參考：** 瀏覽所有可用圖標 [lucide.dev/icons](https://lucide.dev/icons)
+
+> **兼容性說明：** 一些舊插件使用位置參數，如 `addSidebarButton(id, icon, label, onClick)`。官方 API 使用 **選項對象**，如上所述。對於新插件，始終使用對象風格。
+
+#### `ui.openWebview(options)`
+
+打開一個彈出窗口，顯示自定義 HTML 內容。這是你構建豐富 UI 的方式。
+
+| 選項 | 類型 | 描述 |
+|--------|------|-------------|
+| `title` | `string` | 窗口標題 |
+| `html` | `string` | 要渲染的完整 HTML 內容 |
+```javascript
+context.ui.openWebview({
+  title: 'Server Status',
+  html: `
+    <html>
+    <body style="font-family: sans-serif; padding: 20px; background: #1a1a2e; color: #e2e8f0;">
+      <h1>Server Status</h1>
+      <div id="status">Loading...</div>
+      <script>
+        document.getElementById('status').textContent = 'All systems operational';
+      </script>
+    </body>
+    </html>
+  `
+});
+```
+> 查看 [第3部分](#part-3-building-custom-ui-with-webviews) 了解進階的 webview 模式。
+
+#### `ui.showNotification(type, message)`
+
+顯示一個 toast 通知。
+
+| 參數 | 類型 | 描述 |
+|------|------|------|
+| `type` | `'success' \| 'error' \| 'info'` | 通知樣式 |
+| `message` | `string` | 要顯示的文本 |
+```javascript
+context.ui.showNotification('success', 'Backup completed!');
+context.ui.showNotification('error', 'Connection failed — check SSH settings');
+context.ui.showNotification('info', 'Scanning 254 servers...');
+```
+#### `ui.addStatusBarItem(id, text)`
+
+在底部狀態欄添加一個持久的文本項目。
+
+| 參數 | 類型 | 描述 |
+|------|------|------|
+| `id` | `string` | 此狀態項的唯一 ID |
+| `text` | `string` | 要顯示的文本 |
+```javascript
+// Show server count in status bar
+context.ui.addStatusBarItem('server-count', '3 servers connected');
+
+// Update it later
+context.ui.addStatusBarItem('server-count', '5 servers connected');
+```
+---
+
+### `ctx.settings` — 持久存儲
+
+插件設置永久存儲在 `~/.wia-soom/plugins/{your-plugin}/.plugin-settings.json` 中。
+
+#### `settings.get(key)`
+
+讀取已保存的值。
+```javascript
+var theme = context.settings.get('theme');       // 'dark'
+var count = context.settings.get('refreshRate'); // 30
+var items = context.settings.get('todoList');    // [{ text: '...', done: false }, ...]
+```
+如果鍵不存在，則返回 `undefined`。
+
+#### `settings.set(key, value)`
+
+保存一個值。支持字符串、數字、布爾值、數組和對象。
+```javascript
+context.settings.set('theme', 'dark');
+context.settings.set('refreshRate', 30);
+context.settings.set('todoList', [
+  { text: 'Deploy v2', done: false },
+  { text: 'Update DNS', done: true }
+]);
+```
+**示例：記住用戶偏好**
+```javascript
+exports.activate = function(context) {
+  // Load saved preference (or default to 60 seconds)
+  var interval = context.settings.get('interval') || 60;
+
+  context.ui.addSidebarButton({
+    icon: 'settings',
+    label: 'Configure',
+    onClick: function() {
+      // Toggle between 30s and 60s
+      interval = (interval === 60) ? 30 : 60;
+      context.settings.set('interval', interval);
+      context.ui.showNotification('info', 'Refresh interval: ' + interval + 's');
+    }
+  });
+};
+```
+---
+
+### `ctx.ai` — AI 集成
+
+> **狀態：即將推出** — AI API 已定義，但尚未連接到 Soomy。目前返回 `{ response: 'AI not yet connected' }`。完整的 AI 集成計劃在未來版本中實現。
+
+#### `ai.chat(messages, options?)`
+
+向 AI 助手（Soomy）發送消息。
+```javascript
+var response = await context.ai.chat([
+  { role: 'user', content: 'Explain this error: ECONNREFUSED 127.0.0.1:3306' }
+]);
+
+// Once implemented, response will contain Soomy's AI answer
+context.ui.showNotification('info', 'AI says: ' + response.response);
+```
+---
+
+## 第3部分：使用 Webviews 構建自定義 UI
+
+`openWebview()` API 讓你可以使用 HTML、CSS 和 JavaScript 構建儀表板 UI — 所有內容都在彈出窗口內。
+
+> **重要限制：** Webviews 是 **僅顯示** 的。它們不能回調插件 API（`ctx.settings`、`ctx.terminal` 等）。使用側邊按鈕進行所有用戶操作，並使用 `openWebview()` 顯示當前狀態。如果需要互動功能，請從側邊按鈕觸發它們，然後重新打開 webview 以刷新顯示。
+
+### 模式：終端命令 → 解析輸出 → 以 HTML 顯示
+
+這是最常見的插件模式。你運行一個命令，解析結果，並以視覺方式顯示它。
+```javascript
+exports.activate = function(context) {
+  context.ui.addSidebarButton({
+    icon: 'hard-drive',
+    label: 'Disk Usage',
+    onClick: function() {
+      // Collect terminal output
+      var output = '';
+      var unsub = context.terminal.onOutput('current', function(data) {
+        output += data;
+      });
+
+      // Send the command
+      context.terminal.send('current', 'df -h --output=target,pcent,size,used,avail 2>/dev/null\n');
+
+      // Wait for output, then show it
+      setTimeout(function() {
+        unsub(); // Stop listening
+
+        // Parse the output into HTML
+        var rows = output.split('\n')
+          .filter(function(line) { return line.includes('%'); })
+          .map(function(line) {
+            var parts = line.trim().split(/\s+/);
+            return '<tr><td>' + parts.join('</td><td>') + '</td></tr>';
+          })
+          .join('');
+
+        context.ui.openWebview({
+          title: 'Disk Usage',
+          html: '<html><body style="font-family:monospace;background:#1a1a2e;color:#e2e8f0;padding:20px;">' +
+            '<h2>Disk Usage</h2>' +
+            '<table style="width:100%;border-collapse:collapse;">' +
+            '<tr style="border-bottom:1px solid #333;"><th>Mount</th><th>Used%</th><th>Size</th><th>Used</th><th>Avail</th></tr>' +
+            rows +
+            '</table></body></html>'
+        });
+      }, 1500); // Give the command time to complete
+    }
+  });
+};
+```
+### 模式：自動刷新互動儀表板
+```javascript
+exports.activate = function(context) {
+  context.ui.addSidebarButton({
+    icon: 'activity',
+    label: 'Live Monitor',
+    onClick: function() {
+      context.ui.openWebview({
+        title: 'Live Server Monitor',
+        html: [
+          '<html><head><style>',
+          '  body { font-family: -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; }',
+          '  .card { background: #1e293b; border-radius: 12px; padding: 20px; margin: 12px 0; }',
+          '  .card h3 { margin: 0 0 8px 0; color: #38bdf8; }',
+          '  .metric { font-size: 2rem; font-weight: bold; }',
+          '  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }',
+          '  .bar { height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }',
+          '  .bar-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #eab308, #ef4444); transition: width 0.5s; }',
+          '</style></head><body>',
+          '  <h1>Server Monitor</h1>',
+          '  <div class="grid">',
+          '    <div class="card"><h3>CPU</h3><div class="metric" id="cpu">--</div><div class="bar"><div class="bar-fill" id="cpu-bar" style="width:0%"></div></div></div>',
+          '    <div class="card"><h3>Memory</h3><div class="metric" id="mem">--</div><div class="bar"><div class="bar-fill" id="mem-bar" style="width:0%"></div></div></div>',
+          '    <div class="card"><h3>Disk</h3><div class="metric" id="disk">--</div><div class="bar"><div class="bar-fill" id="disk-bar" style="width:0%"></div></div></div>',
+          '    <div class="card"><h3>Uptime</h3><div class="metric" id="uptime">--</div></div>',
+          '  </div>',
+          '  <p style="color:#64748b;margin-top:20px;">Refreshes every 5 seconds</p>',
+          '</body></html>'
+        ].join('\n')
+      });
+    }
+  });
+};
+```
+### 模式：在 Webview 中顯示設置
+
+> **注意：** Webviews 僅用於顯示 — 它們不能回調插件 API。在你的側邊按鈕處理程序中使用 `ctx.settings` 來修改設置，並使用 `openWebview()` 來顯示當前狀態。
+```javascript
+function showCurrentSettings(context) {
+  var url = context.settings.get('webhookUrl') || '(not set)';
+  var interval = context.settings.get('interval') || 60;
+
+  context.ui.openWebview({
+    title: 'Current Settings',
+    html: [
+      '<html><body style="font-family:sans-serif;background:#0f172a;color:#e2e8f0;padding:24px;">',
+      '<h2>Current Settings</h2>',
+      '<div style="background:#1e293b;padding:16px;border-radius:8px;margin:12px 0;">',
+      '  <p><strong>Webhook URL:</strong> ' + url + '</p>',
+      '  <p><strong>Refresh Interval:</strong> ' + interval + 's</p>',
+      '</div>',
+      '<p style="color:#475569;font-size:0.8rem;">Use sidebar buttons to change settings.</p>',
+      '</body></html>'
+    ].join('\n')
+  });
+}
+
+// Toggle interval via sidebar button
+context.ui.addSidebarButton({
+  icon: 'settings',
+  label: 'Toggle Interval',
+  onClick: function() {
+    var current = context.settings.get('interval') || 60;
+    var next = (current === 60) ? 30 : 60;
+    context.settings.set('interval', next);
+    context.ui.showNotification('info', 'Interval set to ' + next + 's');
+  }
+});
+```
+---
+
+## 第4部分：發佈你的插件
+
+### 步驟 1：本地測試
+
+1. 將你的插件複製到 `~/.wia-soom/plugins/{your-plugin}/`
+2. 重啟 WIA SOOM
+3. 驗證它是否正常運行：側邊按鈕出現，功能正常
+4. 測試邊緣情況：如果沒有終端連接會發生什麼？
+
+### 步驟 2：準備提交
+
+你的插件文件夾必須包含：
+```
+your-plugin/
+├── package.json    ← manifest (required fields below)
+└── index.js        ← must export activate(context)
+```
+**必需的 `package.json` 字段：**
+
+| 字段 | 描述 | 示例 |
+|-------|-------------|---------|
+| `name` | 唯一的 kebab-case ID | `"my-awesome-plugin"` |
+| `version` | 語義版本 | `"1.0.0"` |
+| `description` | 一行描述 | `"實時監控 nginx 訪問日誌"` |
+| `author` | 你的名字 | `"John Doe"` |
+| `main` | 入口點 | `"index.js"` |
+
+**可選字段：**
+
+| 字段 | 描述 |
+|-------|-------------|
+| `license` | 授權類型（建議使用 MIT） |
+| `keywords` | 搜索標籤的數組 |
+| `soom.minVersion` | 所需的最小 WIA SOOM 版本 |
+
+### 第 3 步：提交到插件註冊表
+
+1. ****Package** your plugin as a ZIP file
+2. **添加** 你的插件到 `plugins/{your-plugin-name}/`
+3. **提交** Pull Request
+
+### 第 4 步：審核和批准
+
+我們會對每個插件進行審核，考慮以下方面：
+
+- **安全性** — 沒有危險的 API（參見 [安全規則](#security-rules)）
+- **質量** — 它能正常運行嗎？代碼是否乾淨？
+- **實用性** — 它能解決真正的問題嗎？
+
+經批准後：
+1. 你的插件將被添加到 `registry.json`
+2. 在 `dist/` 中創建 ZIP 包
+3. 你的插件會出現在所有 WIA SOOM 用戶的 **插件商店** 中！
+
+---
+
+## 第 5 部分：最佳實踐
+
+### 安全規則
+
+這些規則是 **強制性的**。違反這些規則的插件將被拒絕。
+
+| 規則 | 原因 |
+|------|-----|
+| **永遠** 不要使用 `eval()` 或 `new Function()` | 代碼注入風險 |
+| **永遠** 不要使用 `child_process`、`exec()`、`spawn()` | 只使用 `ctx.terminal.send()` 來執行命令 |
+| **永遠** 不要獲取外部 URL | 例外：`wiasoom.com` API 端點 |
+| **永遠** 不要訪問 `process.env` | 環境變量可能包含秘密 |
+| **永遠** 不要直接使用 `require('fs')` | 使用 `ctx.settings` 進行存儲，使用 `ctx.sftp` 進行文件傳輸 |
+| **永遠** 不要使用 npm 外部包 | 僅限純 JavaScript — 不要有 node_modules |
+| **必須** 使用 `ctx.terminal.send()` 來執行所有遠程命令 | 這是通過安全的 SSH 通道進行的 |
+| **必須** 在 `deactivate()` 中進行清理 | 移除監聽器，清除間隔 |
+
+### 錯誤處理
+
+始終將風險操作包裹在 try/catch 中：
+```javascript
+exports.activate = function(context) {
+  try {
+    // Your plugin logic
+    context.ui.addSidebarButton({
+      icon: 'server',
+      label: 'My Tool',
+      onClick: function() {
+        try {
+          // risky operation
+        } catch (err) {
+          context.ui.showNotification('error', 'Something went wrong: ' + err.message);
+        }
+      }
+    });
+  } catch (err) {
+    console.error('[my-plugin] Failed to activate:', err);
+  }
+};
+```
+### 在 deactivate() 中清理
+
+如果你的插件創建了間隔、監聽器或訂閱 — 請清理它們：
+```javascript
+var intervals = [];
+var unsubscribers = [];
+
+exports.activate = function(context) {
+  // Save references to things you need to clean up
+  var unsub = context.terminal.onOutput('session1', function(data) { /* ... */ });
+  unsubscribers.push(unsub);
+
+  var timer = setInterval(function() { /* ... */ }, 5000);
+  intervals.push(timer);
+};
+
+exports.deactivate = function() {
+  // Clean up everything
+  intervals.forEach(function(timer) { clearInterval(timer); });
+  intervals = [];
+  unsubscribers.forEach(function(unsub) { unsub(); });
+  unsubscribers = [];
+};
+```
+### i18n 支持
+
+WIA SOOM 支持 254 種語言。要使你的插件標籤可翻��，請使用簡單的方法：
+```javascript
+// Simple multi-language labels
+// 간단한 다국어 라벨
+var LABELS = {
+  en: { name: 'Disk Checker', scanning: 'Scanning disks...' },
+  ko: { name: '디스크 체커', scanning: '디스크 스캔 중...' },
+  ja: { name: 'ディスクチェッカー', scanning: 'ディスクスキャン中...' },
+  // Add more languages as needed
+};
+
+function t(key) {
+  // Try to detect language from localStorage (set by WIA SOOM language modal)
+  var lang = 'en'; // default
+  try { lang = localStorage.getItem('soom_language') || 'en'; } catch(e) {}
+  return (LABELS[lang] && LABELS[lang][key]) || LABELS.en[key] || key;
+}
+
+exports.activate = function(context) {
+  context.ui.addSidebarButton({
+    icon: 'hard-drive',
+    label: t('name'),
+    onClick: function() {
+      context.ui.showNotification('info', t('scanning'));
+    }
+  });
+};
+```
+---
+
+## 第 6 部分：實際案例
+
+### 示例 1：伺服器磁碟檢查器
+
+在遠程伺服器上運行 `df -h`，並在狀態欄中顯示已用/可用空間。
+```javascript
+'use strict';
+
+/**
+ * Server Disk Checker — WIA SOOM Plugin
+ * 서버 디스크 용량 체커
+ *
+ * Shows disk usage in the status bar.
+ * Alerts when any partition exceeds 90%.
+ */
+
+var checkInterval = null;
+var unsubscribers = [];
+
+exports.activate = function activate(context) {
+  // Add sidebar button to trigger manual check
+  // 사이드바 버튼: 수동 체크 트리거
+  context.ui.addSidebarButton({
+    icon: 'hard-drive',
+    label: 'Disk Check',
+    onClick: function() {
+      checkDisk(context);
+    }
+  });
+
+  // Auto-check every 5 minutes
+  // 5분마다 자동 체크
+  var interval = context.settings.get('interval') || 300;
+  checkInterval = setInterval(function() {
+    checkDisk(context);
+  }, interval * 1000);
+};
+
+function checkDisk(context) {
+  var output = '';
+
+  // Listen for terminal output
+  // 터미널 출력 수신
+  var unsub = context.terminal.onOutput('current', function(data) {
+    output += data;
+  });
+  unsubscribers.push(unsub);
+
+  // Send the command
+  // 명령 전송
+  context.terminal.send('current', "df -h / | tail -1 | awk '{print $5}'\n");
+
+  // Parse after delay
+  // 잠시 후 파싱
+  setTimeout(function() {
+    unsub();
+
+    // Extract percentage (e.g., "73%")
+    // 퍼센트 추출 (예: "73%")
+    var match = output.match(/(\d+)%/);
+    if (match) {
+      var percent = parseInt(match[1]);
+      context.ui.addStatusBarItem('disk-usage', 'Disk: ' + percent + '%');
+
+      // Alert if over 90%
+      // 90% 초과 시 경고
+      if (percent > 90) {
+        context.ui.showNotification('error', 'WARNING: Disk usage at ' + percent + '%! Free up space.');
+      }
+    }
+  }, 2000);
+}
+
+exports.deactivate = function deactivate() {
+  if (checkInterval) {
+    clearInterval(checkInterval);
+    checkInterval = null;
+  }
+  unsubscribers.forEach(function(unsub) { unsub(); });
+  unsubscribers = [];
+};
+```
+---
+
+### 示例 2：TODO 管理器
+
+一個使用設置進行持久存儲和使用 webview 進行顯示的 TODO 列表管理插件。
+
+> **設計模式：** 由於 webviews 不能直接調用插件 API，這個插件使用了 "快照" 方法 — 它從設置中讀取 TODO，將其渲染為只讀 HTML，並提供基於側邊欄的操作來添加項目。webview 是一個 **顯示** 層，而不是交互式表單。
+```javascript
+'use strict';
+
+/**
+ * TODO Manager — WIA SOOM Plugin
+ * 할일 관리자
+ *
+ * Pattern: settings-driven display (no webview↔plugin bridge needed)
+ * 패턴: settings 기반 표시 (웹뷰↔플러그인 브릿지 불필요)
+ */
+
+exports.activate = function activate(context) {
+  // Show current TODO count in status bar
+  // 현재 TODO 수를 상태바에 표시
+  updateStatusBar(context);
+
+  // Button 1: View TODO list
+  // 버튼 1: TODO 목록 보기
+  context.ui.addSidebarButton({
+    id: 'todo-view',
+    icon: 'check-square',
+    label: 'TODO List',
+    onClick: function() {
+      showTodoList(context);
+    }
+  });
+
+  // Button 2: Quick-add a TODO via notification prompt
+  // 버튼 2: 알림 프롬프트로 빠르게 TODO 추가
+  context.ui.addSidebarButton({
+    id: 'todo-add',
+    icon: 'plus-square',
+    label: 'Add TODO',
+    onClick: function() {
+      // Use terminal echo as a quick input method
+      // 터미널 echo를 빠른 입력 방법으로 사용
+      var todos = context.settings.get('todos') || [];
+      var newItem = 'Task #' + (todos.length + 1) + ' — ' + new Date().toLocaleString();
+      todos.push({ text: newItem, done: false, createdAt: new Date().toISOString() });
+      context.settings.set('todos', todos);
+      updateStatusBar(context);
+      context.ui.showNotification('success', 'Added: ' + newItem);
+    }
+  });
+
+  // Button 3: Clear completed TODOs
+  // 버튼 3: 완료된 TODO 정리
+  context.ui.addSidebarButton({
+    id: 'todo-clear',
+    icon: 'trash-2',
+    label: 'Clear Done',
+    onClick: function() {
+      var todos = context.settings.get('todos') || [];
+      var before = todos.length;
+      todos = todos.filter(function(t) { return !t.done; });
+      context.settings.set('todos', todos);
+      updateStatusBar(context);
+      context.ui.showNotification('info', 'Cleared ' + (before - todos.length) + ' completed tasks');
+    }
+  });
+};
+
+function updateStatusBar(context) {
+  var todos = context.settings.get('todos') || [];
+  var remaining = todos.filter(function(t) { return !t.done; }).length;
+  context.ui.addStatusBarItem('todo-count', 'TODO: ' + remaining + '/' + todos.length);
+}
+
+function showTodoList(context) {
+  var todos = context.settings.get('todos') || [];
+  var remaining = todos.filter(function(t) { return !t.done; }).length;
+
+  // Build read-only HTML display
+  // 읽기 전용 HTML 표시 생성
+  var rows = todos.map(function(todo, i) {
+    var status = todo.done ? '✅' : '⬜';
+    var style = todo.done ? 'text-decoration:line-through;color:#64748b;' : 'color:#e2e8f0;';
+    var date = todo.createdAt ? new Date(todo.createdAt).toLocaleDateString() : '';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#1e293b;border-radius:8px;margin:6px 0;">' +
+      '<span style="font-size:1.2em;">' + status + '</span>' +
+      '<span style="flex:1;' + style + '">' + escapeHtml(todo.text) + '</span>' +
+      '<span style="color:#475569;font-size:0.75rem;">' + date + '</span>' +
+      '</div>';
+  }).join('');
+
+  if (todos.length === 0) {
+    rows = '<div style="text-align:center;padding:40px;color:#475569;">No tasks yet. Click "Add TODO" in the sidebar.</div>';
+  }
+
+  context.ui.openWebview({
+    title: 'TODO List (' + remaining + ' remaining)',
+    html: [
+      '<html><body style="font-family:-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;padding:24px;">',
+      '<h1 style="margin-bottom:4px;">TODO List</h1>',
+      '<p style="color:#64748b;margin-bottom:20px;">' + remaining + ' of ' + todos.length + ' remaining</p>',
+      rows,
+      '<p style="color:#334155;margin-top:24px;font-size:0.8rem;">Use sidebar buttons to add/clear tasks, then reopen this view.</p>',
+      '</body></html>'
+    ].join('\n')
+  });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+exports.deactivate = function deactivate() {};
+```
+---
+
+### 示例 3：錯誤監視器
+
+監控終端輸出，當檢測到特定模式時發送通知。
+```javascript
+'use strict';
+
+/**
+ * Error Watcher — WIA SOOM Plugin
+ * 에러 감시자
+ *
+ * Watches terminal output for error patterns.
+ * Shows notification when errors are detected.
+ * Configurable patterns via settings.
+ */
+
+var watchers = [];
+var errorCount = 0;
+
+// Default patterns to watch for
+// 기본 감시 패턴
+var DEFAULT_PATTERNS = [
+  'FATAL',
+  'CRITICAL',
+  'OutOfMemory',
+  'Segmentation fault',
+  'kill -9',
+  'No space left on device',
+  'Connection refused',
+  'Permission denied'
+];
+
+exports.activate = function activate(context) {
+  // Load custom patterns or use defaults
+  // 커스텀 패턴 로드 또는 기본값 사용
+  var patterns = context.settings.get('patterns') || DEFAULT_PATTERNS;
+
+  context.ui.addSidebarButton({
+    icon: 'eye',
+    label: 'Error Watcher',
+    onClick: function() {
+      context.ui.showNotification('info',
+        'Watching for ' + patterns.length + ' error patterns. ' +
+        errorCount + ' errors detected so far.'
+      );
+    }
+  });
+
+  // Update status bar
+  // 상태바 업데이트
+  context.ui.addStatusBarItem('error-watcher', 'Errors: ' + errorCount);
+
+  // Watch current terminal
+  // 현재 터미널 감시
+  var unsub = context.terminal.onOutput('current', function(data) {
+    for (var i = 0; i < patterns.length; i++) {
+      if (data.includes(patterns[i])) {
+        errorCount++;
+        context.ui.addStatusBarItem('error-watcher', 'Errors: ' + errorCount);
+        context.ui.showNotification('error',
+          'Error detected: "' + patterns[i] + '" found in terminal output'
+        );
+        // Save error log
+        // 에러 로그 저장
+        var log = context.settings.get('errorLog') || [];
+        log.push({
+          pattern: patterns[i],
+          time: new Date().toISOString(),
+          snippet: data.substring(0, 200)
+        });
+        // Keep last 100 errors
+        // 최근 100개만 유지
+        if (log.length > 100) log = log.slice(-100);
+        context.settings.set('errorLog', log);
+        break; // One notification per output chunk
+      }
+    }
+  });
+  watchers.push(unsub);
+};
+
+exports.deactivate = function deactivate() {
+  watchers.forEach(function(unsub) { unsub(); });
+  watchers = [];
+};
+```
+---
+
+## 附錄：類別與圖標
+
+### 插件類別 (29)
+
+在你的 `package.json` `keywords` 中使用這些類別，或在提交到註冊表時使用：
+
+| 類別 | 描述 |
+|------|------|
+| `server` | 一般伺服器管理 |
+| `devtools` | 開發工具 |
+| `calculator` | 計算器和轉換器 |
+| `simulator` | 模擬器 |
+| `game` | 終端遊戲 |
+| `business` | 商業工具 |
+| `security` | 安全性和審計 |
+| `web` | 網頁伺服器管理 |
+| `education` | 教育工具 |
+| `health` | 健康相關工具 |
+| `islamic` | 伊斯蘭工具（祈禱時間等） |
+| `science` | 科學工具 |
+| `quantum` | 量子計算工具 |
+| `ai` | AI 驅動的工具 |
+| `biotech` | 生物技術工具 |
+| `space` | 太空和天文工具 |
+| `network` | 網絡工具 |
+| `database` | 數據庫管理 |
+| `monitoring` | 伺服器監控 |
+| `devops` | DevOps 和 CI/CD |
+| `utility` | 一般實用工具 |
+| `design` | 設計工具 |
+| `ecommerce` | 電子商務工具 |
+| `automation` | 自動化工具 |
+| `kpop` | K-pop 相關工具 |
+| `accessibility` | 可及性工具 |
+| `analytics` | 分析和報告 |
+| `wia` | WIA 生態系統工具 |
+| `all` | 出現在所有類別中 |
+
+### 推薦圖標 (Lucide)
+
+| 圖標名稱 | 用途 |
+|----------|------|
+| `server` | 伺服器管理 |
+| `shield` | 安全性 |
+| `database` | 數據庫 |
+| `activity` | 監控 |
+| `terminal` | 終端工具 |
+| `code` | 開發 |
+| `hard-drive` | 磁碟/存儲 |
+| `network` | 網絡連接 |
+| `lock` | 認證/加密 |
+| `eye` | 監視/監控 |
+| `check-square` | 任務/TODO |
+| `layout-dashboard` | 儀表板 |
+| `settings` | 配置 |
+| `zap` | 自動化 |
+| `globe` | 網頁/國際 |
+
+瀏覽所有 1,500+ 個圖標：[lucide.dev/icons](https://lucide.dev/icons)
+
+---
+
+## 需要幫助嗎？
+
+- **GitHub 問題：** [wia-soom/issues](https://github.com/WIA-Official/wiasoom.com/issues)
+- **插件問題：** [GitHub Issues](https://github.com/WIA-Official/wiasoom.com/issues)
+- **示例插件：** [Website](https://wiasoom.com)
+- **網站：** [wiasoom.com](https://wiasoom.com)
+
+---
+
+<p align="center"><em>建立一些驚人的東西。與世界分享。</em></p>
+<p align="center"><em>— WIA SOOM 團隊</em></p>

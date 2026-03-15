@@ -10,10 +10,10 @@ Katoa i roto i tētahi taupānga. Kore utu. Pūtāuta. 254 Ngā Reo.
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wia-soom/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 Ngā Reo">
   <img src="https://img.shields.io/badge/plugins-59-green?style=flat-square" alt="59 Plugins">
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="Proprietary License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Platform">
 </p>
 
@@ -202,10 +202,10 @@ Kaore ngā kaiwhakawhanake whai wheako i hanga tēnei — nā te mea i "mōhio" 
 
 | Papamahi | Tāuta |
 |----------|----------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wia-soom/releases/latest) |
+| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Web | [app.wiasoom.com](https://app.wiasoom.com) |
 
 ---
@@ -236,10 +236,6 @@ Taapiri Reo: **$2/mo** (60 min STT + 100K TTS) rānei **$5/mo** (kāore he mutun
 ## Whakaritenga
 
 ```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
 ```
 
 ### Hanga

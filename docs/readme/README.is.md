@@ -10,10 +10,10 @@ Allt í einni app. Ókeypis. Opinn Kóði. 254 Tungumál.
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wia-soom/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 Tungumál">
   <img src="https://img.shields.io/badge/plugins-59-green?style=flat-square" alt="59 Viðbætur">
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT Leyfi">
+  <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="MIT Leyfi">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Vettvangur">
 </p>
 
@@ -202,10 +202,10 @@ Reyndir forritarar byggðu aldrei þetta — því þeir "vissu" að myndir virk
 
 | Vettvangur | Sækja |
 |----------|----------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wia-soom/releases/latest) |
+| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Vefur | [app.wiasoom.com](https://app.wiasoom.com) |
 
 ---
@@ -236,10 +236,6 @@ Raddviðbót: **$2/mán** (60 mín STT + 100K TTS) eða **$5/mán** (ótakmarka�
 ## Þróun
 
 ```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
 ```
 
 ### Bygging

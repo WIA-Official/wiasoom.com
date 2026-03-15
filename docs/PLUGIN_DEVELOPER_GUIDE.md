@@ -535,9 +535,9 @@ your-plugin/
 
 ### Step 3: Submit to the Plugin Registry
 
-1. **Fork** [wia-soom-plugins](https://github.com/WIA-Official/wia-soom-plugins)
-2. **Add** your plugin to `plugins/{your-plugin-name}/`
-3. **Submit** a Pull Request
+1. **Package** your plugin as a ZIP file
+2. **Submit** via **Settings → Plugins → Submit Plugin** in the app
+3. Or email your plugin to **plugins@wiasoom.com**
 
 ### Step 4: Review and approval
 
@@ -1012,9 +1012,8 @@ Browse all 1,500+ icons: [lucide.dev/icons](https://lucide.dev/icons)
 
 ## Need Help?
 
-- **GitHub Issues:** [wia-soom/issues](https://github.com/WIA-Official/wia-soom/issues)
-- **Plugin Issues:** [wia-soom-plugins/issues](https://github.com/WIA-Official/wia-soom-plugins/issues)
-- **Example Plugins:** [wia-soom-plugins/examples](https://github.com/WIA-Official/wia-soom-plugins/tree/main/examples)
+- **GitHub Issues:** [wiasoom.com/issues](https://github.com/WIA-Official/wiasoom.com/issues)
+- **Plugin Guide:** [Plugin Developer Guide](PLUGIN_DEVELOPER_GUIDE.md)
 - **Website:** [wiasoom.com](https://wiasoom.com)
 
 ---

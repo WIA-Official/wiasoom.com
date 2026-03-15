@@ -1,25 +1,21 @@
-Proprietary License
+WIA SOOM — Proprietary License
 
-Copyright (c) 2024-2026 SmileStory Inc. All rights reserved.
+Copyright (c) 2026 SmileStory Inc. All rights reserved.
 
-WIA SOOM is proprietary software developed by SmileStory Inc.
+This software and associated documentation files (the "Software") are the
+proprietary property of SmileStory Inc.
 
-PERMITTED:
-- Personal and commercial use of the compiled application
-- Bug reports and feature requests via GitHub Issues
-- Plugin development using the Plugin API
-- Translation contributions
+Permission is hereby granted to any person to use the compiled binary
+distributions of the Software free of charge, subject to the following
+conditions:
 
-PROHIBITED:
-- Redistribution of the application without written permission
-- Reverse engineering, decompilation, or disassembly
-- Creation of derivative works or competing products
-- Removal of copyright notices or branding
+1. The Software may be used for personal and commercial purposes.
+2. Redistribution of the compiled binaries is permitted provided this
+   license notice is included.
+3. The source code of the Software may not be copied, modified, merged,
+   published, distributed, sublicensed, or sold without prior written
+   permission from SmileStory Inc.
+4. The Software is provided "AS IS", without warranty of any kind.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-SMILESTORY INC. BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY.
-
-For licensing inquiries: wiasoom@gmail.com
+For licensing inquiries: contact@smilestory.net
 Website: https://wiasoom.com

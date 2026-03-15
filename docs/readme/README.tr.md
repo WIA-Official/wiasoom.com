@@ -10,10 +10,10 @@ Hepsi tek bir uygulamada. Ücretsiz. Açık Kaynak. 254 Dil.
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wia-soom/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 Diller">
   <img src="https://img.shields.io/badge/plugins-59-green?style=flat-square" alt="59 Eklenti">
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT Lisansı">
+  <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="MIT Lisansı">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Platform">
 </p>
 
@@ -201,10 +201,10 @@ Deneyimli geliştiriciler bunu hiç inşa etmedi — çünkü "görüntülerin C
 
 | Platform | İndir |
 |----------|-------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wia-soom/releases/latest) |
+| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Web | [app.wiasoom.com](https://app.wiasoom.com) |
 
 ---
@@ -235,10 +235,6 @@ Ses Eklentisi: **$2/ay** (60 dk STT + 100K TTS) veya **$5/ay** (sınırsız)
 ## Geliştirme
 
 ```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
 ```
 
 ### İnşa Et

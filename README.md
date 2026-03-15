@@ -13,7 +13,7 @@ All in one app. Free. Open Source. 254 Languages.
   <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 Languages">
   <img src="https://img.shields.io/badge/plugins-517-green?style=flat-square" alt="517 Plugins">
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
+  <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="Proprietary License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="Platform">
 </p>
 
@@ -295,11 +295,9 @@ WIA SOOM has a plugin system inspired by VS Code Extensions. Build your own plug
 
 📖 **[Plugin Developer Guide](docs/PLUGIN_DEVELOPER_GUIDE.md)** — Complete API reference, tutorials, and examples
 
-🛠 **[Example Plugins](https://github.com/WIA-Official/wia-soom-plugins/tree/main/examples)** — Hello World, Disk Checker, TODO Manager
-
 ⚡ **Quick scaffold:** Use the built-in plugin creator in Settings → Plugins → Create New
 
-517 plugins already in the [Plugin Registry](https://github.com/WIA-Official/wia-soom-plugins) — yours could be next!
+517 plugins already in the Plugin Store — yours could be next!
 
 ---
 

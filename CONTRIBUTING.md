@@ -75,9 +75,9 @@ Read the **[Plugin Developer Guide](docs/PLUGIN_DEVELOPER_GUIDE.md)** for:
 
 ### Submit Your Plugin
 
-1. Fork [wia-soom-plugins](https://github.com/WIA-Official/wia-soom-plugins)
-2. Add your plugin to `plugins/{your-plugin-name}/`
-3. Submit a Pull Request
+1. Build your plugin following the [Plugin Developer Guide](docs/PLUGIN_DEVELOPER_GUIDE.md)
+2. Test it locally in `~/.wia-soom/plugins/{your-plugin-name}/`
+3. Submit your plugin via **Settings → Plugins → Submit Plugin** in the app
 4. After review, your plugin appears in the Plugin Store for all users!
 
 ---
@@ -155,43 +155,14 @@ We use standard ISO 639-1 codes (e.g., `ko`, `en`, `ja`, `ar`, `hi`) with region
 
 ---
 
-## 🛠 Development Setup
+## 🛠 Development
 
-### Prerequisites
+WIA SOOM is a closed-source project. Source code contributions are not accepted at this time.
 
-- Node.js 18+
-- npm 9+
-- Git
-
-### Setup
-
-```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
-```
-
-### Build
-
-```bash
-NODE_OPTIONS="--max-old-space-size=4096" npx electron-vite build
-```
-
-> Note: The default 2GB heap is not enough due to the 254 language files + Monaco editor bundle (~38MB renderer).
-
-### Project Structure
-
-```
-wia-soom/
-├── src/
-│   ├── main/          # Electron main process
-│   ├── renderer/      # React frontend
-│   └── preload/       # Preload scripts
-├── docs/              # Documentation
-├── scripts/           # Build & automation scripts
-└── prompts/           # AI prompt engineering
-```
+You can contribute through:
+- **Plugins** — Build and submit via the Plugin Developer Guide
+- **Translations** — Fix or improve translations for your language
+- **Bug reports & Feature requests** — via [GitHub Issues](https://github.com/WIA-Official/wiasoom.com/issues)
 
 ---
 

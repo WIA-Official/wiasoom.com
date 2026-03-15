@@ -10,10 +10,10 @@ SSH ٹرمینل + AI ایجنٹ + کوڈ ایڈیٹر + SFTP + مشاہدہ<br>
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wia-soom/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="ریلیز"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="ریلیز"></a>
   <img src="https://img.shields.io/badge/languages-254-blueviolet?style=flat-square" alt="254 زبانیں">
   <img src="https://img.shields.io/badge/plugins-59-green?style=flat-square" alt="59 پلگ ان">
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT لائسنس">
+  <img src="https://img.shields.io/badge/license-Proprietary-blue?style=flat-square" alt="MIT لائسنس">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square" alt="پلیٹ فارم">
 </p>
 
@@ -202,10 +202,10 @@ AI نے جواب دیا: *"ہاں، میں تصاویر پڑھ سکتا ہوں! 
 
 | پلیٹ فارم | ڈاؤن لوڈ کریں |
 |----------|----------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wia-soom/releases/latest) |
+| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Web | [app.wiasoom.com](https://app.wiasoom.com) |
 
 ---
@@ -236,10 +236,6 @@ AI نے جواب دیا: *"ہاں، میں تصاویر پڑھ سکتا ہوں! 
 ## ترقی
 
 ```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
 ```
 
 ### تعمیر

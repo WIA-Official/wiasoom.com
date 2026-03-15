@@ -10,7 +10,7 @@ SSH 터미널 + AI 에이전트 + 코드 에디터 + SFTP + 관제<br>
 </p>
 
 <p align="center">
-  <a href="https://github.com/WIA-Official/wia-soom/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wia-soom?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/WIA-Official/wiasoom.com/releases/latest"><img src="https://img.shields.io/github/v/release/WIA-Official/wiasoom.com?style=flat-square" alt="Release"></a>
   <img src="https://img.shields.io/badge/언어-254-blueviolet?style=flat-square" alt="254 Languages">
   <img src="https://img.shields.io/badge/플러그인-59-green?style=flat-square" alt="59 Plugins">
   <img src="https://img.shields.io/badge/라이선스-MIT-blue?style=flat-square" alt="MIT License">
@@ -213,10 +213,10 @@ AI가 답했습니다: *"네. 이미지 읽을 수 있어요! 형 뭐 도와드�
 
 | 플랫폼 | 다운로드 |
 |--------|---------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wia-soom/releases/latest) |
-| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wia-soom/releases/latest) |
+| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Web | [app.wiasoom.com](https://app.wiasoom.com) |
 
 ---
@@ -247,10 +247,6 @@ Voice Add-on: **$2/월** (STT 60분 + TTS 10만자) 또는 **$5/월** (무제한
 ## 개발
 
 ```bash
-git clone https://github.com/WIA-Official/wia-soom.git
-cd wia-soom
-npm install
-npm run dev
 ```
 
 ### 빌드
