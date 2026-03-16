@@ -1,4 +1,11 @@
 <p align="center">
+  <a href="docs/readme/README.zh-CN.md"><strong>🇨🇳 简体中文版</strong></a> ·
+  <a href="docs/readme/README.ko.md"><strong>🇰🇷 한국어</strong></a> ·
+  <a href="docs/readme/README.ja.md"><strong>🇯🇵 日本語</strong></a> ·
+  <a href="docs/readme/">All 255 Languages →</a>
+</p>
+
+<p align="center">
   <img src="https://wiasoom.com/favicon.png" width="120" alt="WIA SOOM">
 </p>
 
