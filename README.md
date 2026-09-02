@@ -265,9 +265,9 @@ Experienced developers never built this — because they "knew" images don't wor
 
 | Platform | Download |
 |----------|----------|
-| Windows | [.exe / .portable](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
-| macOS (Apple Silicon) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
-| macOS (Intel) | [.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| Windows | [Microsoft Store](https://apps.microsoft.com/detail/9NC5T6HQGP1F) |
+| macOS (Apple Silicon) | [.zip](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| macOS (Intel) | [.zip](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Linux | [.AppImage / .deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | Web | [app.wiasoom.com](https://app.wiasoom.com) |
 
@@ -300,8 +300,8 @@ Voice Add-on: **$2/mo** (60 min STT + 100K TTS) or **$5/mo** (unlimited)
 
 | Platform | Download |
 |----------|----------|
-| **Windows** | [WIA SOOM Setup.exe](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
-| **macOS** | [WIA SOOM.dmg](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
+| **Windows** | [Microsoft Store](https://apps.microsoft.com/detail/9NC5T6HQGP1F) |
+| **macOS** | [WIA SOOM.zip](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | **Linux** | [WIA SOOM.AppImage](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 | **Linux (Debian)** | [wia-soom.deb](https://github.com/WIA-Official/wiasoom.com/releases/latest) |
 
